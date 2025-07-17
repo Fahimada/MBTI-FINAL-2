@@ -1320,7 +1320,7 @@
 <label class="option">
 <input name="q62" type="radio" value="7"/>کاملاً موافقم
             </label></div></div>
-<button style="margin: 24px auto; display: block; padding: 12px 24px; background: #6c5ce7; color: white; border: none; border-radius: 6px; font-size: 18px; cursor: pointer;" type="submit">مشاهده نتیجه</button>
+<button onclick="calculateMBTI(); return false;" style="margin: 24px auto; display: block; padding: 12px 24px; background: #6c5ce7; color: white; border: none; border-radius: 6px; font-size: 18px; cursor: pointer;" type="submit">مشاهده نتیجه</button>
 </form>
 
 <script>
@@ -1343,32 +1343,33 @@ const mbtiLinks = {
     "ESFP": "https://designer-sho.com/shop/types/P45624-ESFP.html"
 };
 
-function calculateMBTIResult() {
+function calculateMBTI() {
     const traits = {
-        I: 0, E: 0,
-        N: 0, S: 0,
+        E: 0, I: 0,
+        S: 0, N: 0,
         T: 0, F: 0,
         J: 0, P: 0
     };
 
     const questions = document.querySelectorAll(".question");
-    for (let question of questions) {
-        const selected = question.querySelector("input[type='radio']:checked");
+    for (const q of questions) {
+        const selected = q.querySelector("input[type='radio']:checked");
         if (!selected) {
             alert("لطفاً به تمام سوالات پاسخ دهید.");
             return;
         }
-        const [trait1, trait2] = selected.name.split("_");
+
+        const [first, second] = selected.name.split("_");
         const value = parseInt(selected.value);
-        if (value > 0) traits[trait1] += value;
-        else traits[trait2] -= value;
+        if (value > 0) traits[first] += value;
+        else traits[second] += -value;
     }
 
-    let result = "";
-    result += traits.I >= traits.E ? "I" : "E";
-    result += traits.N >= traits.S ? "N" : "S";
-    result += traits.T >= traits.F ? "T" : "F";
-    result += traits.J >= traits.P ? "J" : "P";
+    const result = 
+        (traits.I >= traits.E ? "I" : "E") +
+        (traits.N >= traits.S ? "N" : "S") +
+        (traits.T >= traits.F ? "T" : "F") +
+        (traits.J >= traits.P ? "J" : "P");
 
     if (mbtiLinks[result]) {
         window.location.href = mbtiLinks[result];
